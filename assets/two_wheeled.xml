@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mujoco model="two_wheeled_balancing_robot">
+
+    <!-- ================================================================ -->
+    <!-- COMPILER / SIMULATION SETTINGS                                  -->
+    <!-- ================================================================ -->
+
+    <compiler
+        angle="radian"
+        coordinate="local"/>
+
+    <option
+        timestep="0.002"
+        gravity="0 0 -9.81"
+        integrator="implicitfast"/>
+
+
+    <!-- ================================================================ -->
+    <!-- DEFAULT PHYSICS                                                 -->
+    <!-- ================================================================ -->
+
+    <default>
+
+        <!-- Wheel joint dynamics -->
+        <joint
+            damping="0.02"
+            armature="0.0001"/>
+
+        <!-- Contact properties -->
+        <geom
+            contype="1"
+            conaffinity="1"
+            friction="1.0 0.005 0.0005"
+            condim="3"/>
+
+    </default>
+
+
+    <!-- ================================================================ -->
+    <!-- ASSETS                                                           -->
+    <!-- ================================================================ -->
+
+    <asset>
+
+        <material
+            name="ground_material"
+            rgba="0.7 0.7 0.7 1"/>
+
+    </asset>
+
+
+    <!-- ================================================================ -->
+    <!-- WORLD                                                             -->
+    <!-- ================================================================ -->
+
+    <worldbody>
+
+        <!-- Lighting -->
+        <light
+            name="top_light"
+            pos="0 0 1"
+            directional="true"/>
+
+
+        <!-- Ground -->
+        <geom
+            name="ground"
+            type="plane"
+            pos="0 0 0"
+            size="2 2 0.1"
+            material="ground_material"/>
+
+
+        <!-- ============================================================ -->
+        <!-- ROBOT BASE                                                    -->
+        <!-- ============================================================ -->
+
+        <body
+            name="base_link"
+            pos="0 0 0.065">
+
+            <!-- Allow the robot to freely fall and balance -->
+            <freejoint name="base_free"/>
+
+
+            <!-- Chassis inertial properties -->
+            <inertial
+                pos="0 0 0"
+                mass="2.0"
+                diaginertia="0.00248333 0.00208333 0.00123333"/>
+
+
+            <!-- Chassis -->
+            <geom
+                name="chassis"
+                type="box"
+                size="0.025 0.035 0.05"
+                rgba="0.2 0.2 0.8 1"/>
+
+
+            <!-- ======================================================== -->
+            <!-- LEFT WHEEL                                                 -->
+            <!-- ======================================================== -->
+
+            <body
+                name="left_wheel"
+                pos="0 0.045 -0.045">
+
+                <joint
+                    name="left_wheel_joint"
+                    type="hinge"
+                    axis="0 1 0"
+                    damping="0.02"/>
+
+                <inertial
+                    pos="0 0 0"
+                    mass="0.05"
+                    diaginertia="6.66667e-6 1e-5 6.66667e-6"/>
+
+                <geom
+                    name="left_wheel_geom"
+                    type="cylinder"
+                    size="0.02 0.01"
+                    euler="1.5708 0 0"
+                    rgba="0.1 0.1 0.1 1"/>
+
+                <!-- Visual stripe for observing wheel rotation -->
+                <site
+                    name="left_wheel_stripe"
+                    type="box"
+                    pos="0 0.011 0"
+                    size="0.018 0.0015 0.003"
+                    rgba="1 1 1 1"/>
+
+            </body>
+
+
+            <!-- ======================================================== -->
+            <!-- RIGHT WHEEL                                                -->
+            <!-- ======================================================== -->
+
+            <body
+                name="right_wheel"
+                pos="0 -0.045 -0.045">
+
+                <joint
+                    name="right_wheel_joint"
+                    type="hinge"
+                    axis="0 1 0"
+                    damping="0.02"/>
+
+                <inertial
+                    pos="0 0 0"
+                    mass="0.05"
+                    diaginertia="6.66667e-6 1e-5 6.66667e-6"/>
+
+                <geom
+                    name="right_wheel_geom"
+                    type="cylinder"
+                    size="0.02 0.01"
+                    euler="1.5708 0 0"
+                    rgba="0.1 0.1 0.1 1"/>
+
+                <!-- Visual stripe for observing wheel rotation -->
+                <site
+                    name="right_wheel_stripe"
+                    type="box"
+                    pos="0 -0.011 0"
+                    size="0.018 0.0015 0.003"
+                    rgba="1 1 1 1"/>
+
+            </body>
+
+        </body>
+
+    </worldbody>
+
+
+    <!-- ================================================================ -->
+    <!-- ACTUATORS                                                        -->
+    <!-- ================================================================ -->
+
+    <actuator>
+
+        <!-- Direct wheel torque control -->
+        <motor
+            name="left_motor"
+            joint="left_wheel_joint"
+            gear="1"/>
+
+        <motor
+            name="right_motor"
+            joint="right_wheel_joint"
+            gear="1"/>
+
+    </actuator>
+
+</mujoco>
