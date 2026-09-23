@@ -17,9 +17,9 @@ venv/
 env/
 *.lock
 
-# Training artifacts - keep repo lean, use GitHub Releases for models
-trained_models/*.zip
-trained_models/checkpoints/*.zip
+# Training artifacts & docs - keep repo lean (only envs/scripts/test/assets tracked)
+docs/
+trained_models/
 logs/
 tensorboard/
 wandb/

@@ -2,12 +2,12 @@
 Train PPO to balance the two-wheeled robot.
 
 Usage:
-    python train_ppo.py                     # train from scratch
-    python train_ppo.py --timesteps 2000000 # longer run
-    python train_ppo.py --resume            # continue from the last checkpoint
+    python scripts/train_rl.py                     # train from scratch
+    python scripts/train_rl.py --timesteps 2000000 # longer run
+    python scripts/train_rl.py --resume            # continue from the last checkpoint
 
 Install deps first:
-    pip install "stable-baselines3[extra]" gymnasium mujoco
+    pip install -r requirements.txt
 """
 
 import argparse

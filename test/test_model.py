@@ -1,54 +1,32 @@
-import time
-import math
+"""
+Headless smoke test: verifies the MuJoCo model loads and the Gym env steps.
+No viewer required — suitable for CI.
+"""
+
+import sys
 from pathlib import Path
-import mujoco
-import mujoco.viewer
 
-# ... load model, set KP/KD, get IDs, etc. ...
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(PROJECT_ROOT))
 
-tipped = False
+from envs.balancing_robot_env import TwoWheeledBalanceEnv
 
-try:
-    with mujoco.viewer.launch_passive(model, data) as viewer:
 
-        # camera setup
-        viewer.cam.type = mujoco.mjtCamera.mjCAMERA_FREE
-        viewer.cam.lookat[:] = [0, 0, 0.05]
-        viewer.cam.distance = 0.8
-        viewer.cam.azimuth = 45
-        viewer.cam.elevation = -25
+def test_env_steps(n_steps: int = 100):
+    env = TwoWheeledBalanceEnv(render_mode=None)
+    obs, _ = env.reset(seed=0)
+    assert obs.shape == (7,), f"expected obs shape (7,), got {obs.shape}"
 
-        print("Simulation running. Close the window or press Ctrl+C to stop.")
+    for _ in range(n_steps):
+        action = env.action_space.sample()
+        obs, reward, terminated, truncated, info = env.step(action)
+        assert "pitch" in info
+        if terminated or truncated:
+            obs, _ = env.reset()
 
-        while viewer.is_running():
-            step_start = time.time()
+    env.close()
+    print(f"OK — {n_steps} steps, last pitch={info['pitch']:.3f}, reward={reward:.3f}")
 
-            pitch = get_pitch()
-            pitch_rate = data.cvel[base_id][4]
 
-            if abs(pitch) > TIP_THRESHOLD:
-                tipped = True
-
-            if tipped:
-                torque = 0.0
-            else:
-                torque = KP * pitch + KD * pitch_rate   # or -torque if sign is wrong
-
-            data.ctrl[left_motor_id] = torque
-            data.ctrl[right_motor_id] = torque
-
-            mujoco.mj_step(model, data)
-            viewer.sync()
-
-            # optional status print
-            print(f"\rpitch={math.degrees(pitch):+7.2f}°  torque={torque:+6.3f}", end="")
-
-            # real-time
-            remaining = model.opt.timestep - (time.time() - step_start)
-            if remaining > 0:
-                time.sleep(remaining)
-
-except KeyboardInterrupt:
-    print("\nStopped by Ctrl+C")
-finally:
-    print("\nViewer closed safely.")
+if __name__ == "__main__":
+    test_env_steps()
