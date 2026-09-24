@@ -19,8 +19,6 @@ Two-wheeled balancing robot trained with PPO (Stable-Baselines3) in MuJoCo.
 
 **Episode ends when:** the robot tilts past 35°, or 5000 steps are reached
 
-See `docs/ENV_REFERENCE.md` for the full observation/action/reward tables.
-
 ## Setup
 
 ### 1. Install MuJoCo
@@ -34,7 +32,7 @@ pip install mujoco
 ### 2. Clone the repo
 
 ```bash
-git clone https://github.com/<you>/balancia-robot.git
+git clone https://github.com/AbdelbakiJeddi/balancia_robot-mujoco.git
 cd balancia-robot
 ```
 
